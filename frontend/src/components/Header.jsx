@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaBars, FaTimes } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 export default function Header() {
+  const { currentUser } = useSelector(state => state.user);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const userInitial = currentUser?.username?.charAt(0).toUpperCase() || '';
 
   return (
     <header className="bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-sm p-4">
@@ -32,16 +36,27 @@ export default function Header() {
           </div>
         </form>
 
-        <nav className="hidden md:flex space-x-6">
+        <nav className="hidden md:flex space-x-6 items-center">
           <Link to="/" className="text-white hover:text-teal-100 hover:underline transition-all duration-300">
             Home
           </Link>
-          <Link to="/login" className="text-white hover:text-teal-100 hover:underline transition-all duration-300">
-            Login
-          </Link>
-          <Link to="/Registration" className="text-white hover:text-teal-100 hover:underline transition-all duration-300">
-            Register
-          </Link>
+          {currentUser ? (
+            <Link to="/profile" className="flex items-center gap-2 text-white hover:text-teal-100 transition-all duration-300">
+              <span className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-800 font-medium">
+                {userInitial}
+              </span>
+              <span className="hover:underline">Profile</span>
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" className="text-white hover:text-teal-100 hover:underline transition-all duration-300">
+                Login
+              </Link>
+              <Link to="/register" className="text-white hover:text-teal-100 hover:underline transition-all duration-300">
+                Register
+              </Link>
+            </>
+          )}
         </nav>
 
         <button className="md:hidden text-white hover:text-teal-100 p-2" onClick={toggleMenu}>
@@ -74,20 +89,35 @@ export default function Header() {
             >
               Home
             </Link>
-            <Link
-              to="/login"
-              className="text-white hover:text-teal-100 hover:underline transition-all duration-300 px-4 py-2"
-              onClick={toggleMenu}
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="text-white hover:text-teal-100 hover:underline transition-all duration-300 px-4 py-2"
-              onClick={toggleMenu}
-            >
-              Register
-            </Link>
+            {currentUser ? (
+              <Link
+                to="/profile"
+                className="flex items-center gap-3 text-white hover:text-teal-100 px-4 py-2"
+                onClick={toggleMenu}
+              >
+                <span className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-800 font-medium">
+                  {userInitial}
+                </span>
+                <span className="hover:underline">Profile</span>
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="text-white hover:text-teal-100 hover:underline transition-all duration-300 px-4 py-2"
+                  onClick={toggleMenu}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="text-white hover:text-teal-100 hover:underline transition-all duration-300 px-4 py-2"
+                  onClick={toggleMenu}
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </div>
         </nav>
       )}
